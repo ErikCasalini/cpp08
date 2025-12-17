@@ -1,4 +1,4 @@
-NAME = templates_test
+NAME = find
 
 CXX = c++
 
