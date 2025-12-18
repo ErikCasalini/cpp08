@@ -17,12 +17,12 @@ int	main(void)
 			  << (easyfind(vec, 100) == vec.end() ? "Not found" : "Found") << "\n\n";
 
 	std::list<int> list;
-	list.push_back(1);
-	list.push_back(2);
-	list.push_back(3);
-	list.push_back(4);
-	list.push_back(5);
-	std::cout << "LIST TEST\n" << (easyfind(list, 5) == list.end() ? "Not found" : "Found") << '\n'
+	list.push_back(-1);
+	list.push_back(-2);
+	list.push_back(-3);
+	list.push_back(-4);
+	list.push_back(-5);
+	std::cout << "LIST TEST\n" << (easyfind(list, -5) == list.end() ? "Not found" : "Found") << '\n'
 			  << (easyfind(list, 0) == list.end() ? "Not found" : "Found") << '\n'
 			  << (easyfind(list, 12) == list.end() ? "Not found" : "Found") << '\n'
 			  << (easyfind(list, 6) == list.end() ? "Not found" : "Found") << "\n\n";
