@@ -9,18 +9,24 @@
 /* CONSTRUCTORS/DESTRUCTORS */
 
 Span::Span(void)
-: max_(0), nelem_(0)
+: elements_(),
+  max_(0),
+  nelem_(0)
 {}
 
 Span::Span(const unsigned int N)
-: max_(N), nelem_(0)
+: elements_(),
+  max_(N),
+  nelem_(0)
 {}
 
 Span::~Span(void)
 {}
 
 Span::Span(const Span &src)
-: max_(src.max_), nelem_(src.nelem_), elements_(src.elements_)
+: elements_(src.elements_),
+  max_(src.max_),
+  nelem_(src.nelem_)
 {}
 
 /* OPERATORS */
@@ -28,7 +34,7 @@ Span::Span(const Span &src)
 Span	& Span::operator=(const Span &rhs)
 {
 	if (this != &rhs) {
-		if (rhs.max_ >= max_) {
+		if (max_ >= rhs.nelem_) {
 			nelem_ = rhs.nelem_;
 			elements_ = rhs.elements_;
 		}
@@ -50,6 +56,16 @@ unsigned int	Span::getNelem(void) const
 	return (nelem_);
 }
 
+std::deque<int>::const_iterator	Span::getBegin(void) const
+{
+	return (elements_.begin());
+}
+
+std::deque<int>::const_iterator	Span::getEnd(void) const
+{
+	return (elements_.end());
+}
+
 void	Span::addNumber(const int value)
 {
 	if (nelem_ >= max_)
@@ -60,18 +76,31 @@ void	Span::addNumber(const int value)
 
 unsigned int	Span::shortestSpan(void) const
 {
-	std::vector<int> temp(nelem_);
 	if (nelem_ < 2)
-		throw (std::logic_error("Not enought elements to calculate a span)"));
-	std::sort(elements_.begin(), elements_.end());
-	std::adjacent_difference(elements_.begin(), elements_.end(), temp);
-	return (*std::min_element(temp.begin(), temp.end()));
+		throw (std::logic_error("Not enought elements to calculate a span"));
+
+	std::vector<int>	temp_sort(elements_.begin(), elements_.end());
+	std::vector<int>	diff_vec(nelem_);
+
+	std::sort(temp_sort.begin(), temp_sort.end());
+	std::adjacent_difference(temp_sort.begin(), temp_sort.end(), diff_vec.begin());
+	return (*std::min_element(diff_vec.begin() + 1, diff_vec.end())); // We start at index 1 because adjacent_diff sets value[0] = origin_container[0]
 }
 
 unsigned int	Span::longestSpan(void) const
 {
 	if (nelem_ < 2)
 		throw (std::logic_error("Not enought elements to calculate a span)"));
-	return (std::abs(std::max_element(elements_.begin(), elements_.end()) - std::max_element(elements_.begin(), elements_.end())));
+	return (std::abs(*std::max_element(elements_.begin(), elements_.end()) - *std::min_element(elements_.begin(), elements_.end())));
 }
 
+/* NON MEMBER FUNCTIONS */
+
+std::ostream	&operator<<(std::ostream &stream, const Span &rhs)
+{
+	std::deque<int>::const_iterator elem_it = rhs.getBegin();
+	
+	for (; elem_it != rhs.getEnd(); elem_it++)
+		stream << *elem_it << " ";
+	return (stream);
+}
